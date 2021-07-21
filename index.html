@@ -9,6 +9,64 @@
     <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <style>
+        html, body {
+            margin: 0;
+            border: 0;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+
+        .master-container {
+            width: 50vw;
+            height: 100vh;
+            padding: 10px;
+            /* font-size: 20px; */
+            background-color: lightblue;      
+            margin: auto;
+        }
+
+        .bottom-container {
+            margin: 1rem;
+            padding: 1rem;
+            border: dotted 1px;
+            border-color: indigo;
+
+        }
+
+        input {
+            margin: 1rem;
+
+        }
+
+        .list-container {
+            display: grid;
+            /* grid-template-columns: 50fr 50fr; */
+            /* justify-content: space-between; */
+
+        }
+
+        .list-item1 {
+            /* width: 100%; */
+            /* grid-column-start: 1;
+            grid-column-end: 2; */
+            float: left;
+
+        }
+
+        .list-item2 {
+            /* grid-column-start: 2;
+            grid-column-end: 3; */
+            float: right;
+        }
+        
+    </style>
+    
 </head>
 
 <body>
@@ -28,22 +86,28 @@
 
             render() {
                 return (
-                    <div>
-                        <h1>Tasks</h1>
-                        <ul>
+                    <div className="master-container">
+                        <h1>Task List</h1>
+                        
+                        <ul className="list-container">
                             {
                                 this.state.tasks.map((task, i) => 
-                                    <li key={i}>
+                                    <li className="list-item1" key={i}>
                                         {task}
-                                        <button onClick={() => this.deleteTask(i)}>Done</button>
+                                        <button className="list-item2" onClick={() => this.deleteTask(i)}>✅</button>
                                     </li>
                                 )
                             }
                         </ul>
-                        <div>
-                            <input onChange={this.handleChange} value={this.state.input}/>
+
+                        <div className="bottom-container">
+                            <input onChange={this.handleChange} onKeyPress={this.handleKeyPress} value={this.state.input}/>
                             <button onClick={this.addTask}>Add Task</button>
-                            Total tasks: {this.state.totalTasks}
+                            <h4>You have
+                                {this.state.totalTasks === 0 && " no pending tasks"}
+                                {this.state.totalTasks === 1 && " 1 pending task"}
+                                {this.state.totalTasks > 1 && (" " + this.state.totalTasks + " pending tasks")}
+                            </h4>
                         </div>
                     </div>
                 );
@@ -55,6 +119,12 @@
                 });
             }
 
+            handleKeyPress = (event) => {
+                if(event.key === 'Enter') {
+                    this.addTask();
+                }
+            }
+
             addTask = () => {
                 this.setState(state => ({
                     tasks: [...state.tasks, state.input],
@@ -64,9 +134,7 @@
             }
 
             deleteTask(i) {
-                console.log(i);
                 var tmp = this.state.tasks;
-                console.log(tmp);
                 tmp.splice(i,1);
                 this.setState(state => ({
                     state: tmp,
